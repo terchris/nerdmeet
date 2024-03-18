@@ -4,7 +4,7 @@ param swaggerURL string = 'https://raw.githubusercontent.com/terchris/nerdmeet/m
 resource apiVersionSet 'Microsoft.ApiManagement/service/api-version-sets@2021-08-01' = {
   name: '${apimServiceName}/testfunction-versionset'
   properties: {
-    displayName: 'Test Function API Versions'
+    displayName: 'TEST Function API Versions'
     versioningScheme: 'Segment'
     description: 'Version set for the Test Function APIs'
   }
@@ -13,7 +13,7 @@ resource apiVersionSet 'Microsoft.ApiManagement/service/api-version-sets@2021-08
 resource testFunctionApi 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   name: '${apimServiceName}/testfunction'
   properties: {
-    displayName: 'Test Function APIs'
+    displayName: 'TEST Function APIs'
     description: 'APIs for getting the current time and the current day of the week'
     serviceUrl: 'https://func-intg-testfunction-int001-eus-01.azurewebsites.net'
     path: 'testfunction'

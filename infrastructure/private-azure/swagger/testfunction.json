@@ -13,7 +13,7 @@
   "paths": {
     "/timefunction": {
       "get": {
-        "summary": "Get the current time",
+        "summary": "GET the current time",
         "description": "Returns the current time as a string.",
         "operationId": "getTime",
         "responses": {
@@ -34,7 +34,7 @@
     },
     "/dayofweekfunction": {
       "get": {
-        "summary": "Get the current day of the week",
+        "summary": "GET the current day of the week",
         "description": "Returns the name of the current day of the week.",
         "operationId": "getDayOfWeek",
         "responses": {
