@@ -1,52 +1,51 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "title": "Test Function APIs",
-      "description": "APIs for getting the current time and the current day of the week",
-      "version": "v1"
-    },
-    "host": "func-intg-testfunction-int001-eus-01.azurewebsites.net",
-    "basePath": "/api",
-    "schemes": [
-      "https"
-    ],
-    "paths": {
-      "/timefunction": {
-        "get": {
-          "summary": "Get the current time",
-          "description": "Returns the current time as a string.",
-          "operationId": "getTime",
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "string",
-                    "example": "The current time is: 10:00:00 AM"
-                  }
+  "swagger": "2.0",
+  "info": {
+    "title": "Test Function APIs",
+    "description": "APIs for getting the current time and the current day of the week",
+    "version": "v1"
+  },
+  "host": "func-intg-testfunction-int001-eus-01.azurewebsites.net",
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/timefunction": {
+      "get": {
+        "summary": "Get the current time",
+        "description": "Returns the current time as a string.",
+        "operationId": "getTime",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "The current time is: 10:00:00 AM"
                 }
               }
             }
           }
         }
-      },
-      "/dayofweekfunction": {
-        "get": {
-          "summary": "Get the current day of the week",
-          "description": "Returns the name of the current day of the week.",
-          "operationId": "getDayOfWeek",
-          "responses": {
-            "200": {
-              "description": "Successful response",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "string",
-                    "example": "Today is: Monday"
-                  }
+      }
+    },
+    "/dayofweekfunction": {
+      "get": {
+        "summary": "Get the current day of the week",
+        "description": "Returns the name of the current day of the week.",
+        "operationId": "getDayOfWeek",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "Today is: Monday"
                 }
               }
             }
@@ -55,4 +54,4 @@
       }
     }
   }
-  
+}

@@ -1739,6 +1739,8 @@ az deployment group create \
   --template-file ./apim-bicep/testfunction-apis.bicep
 ```
 
+(I did nun it twice, because I had to change the swagger file)
+
 The output will be:
 
 ```json
@@ -1747,10 +1749,10 @@ The output will be:
   "location": null,
   "name": "testfunction-apis",
   "properties": {
-    "correlationId": "bf8c9767-ee44-4e58-a24e-c9eb56895182",
+    "correlationId": "5d58496b-43d5-4cfb-a699-6776f613e94b",
     "debugSetting": null,
     "dependencies": [],
-    "duration": "PT17.9860019S",
+    "duration": "PT18.2707487S",
     "error": null,
     "mode": "Incremental",
     "onErrorDeployment": null,
@@ -1800,7 +1802,7 @@ The output will be:
     "provisioningState": "Succeeded",
     "templateHash": "15332243142673318338",
     "templateLink": null,
-    "timestamp": "2024-03-18T09:09:13.606519+00:00",
+    "timestamp": "2024-03-18T12:46:08.861902+00:00",
     "validatedResources": null
   },
   "resourceGroup": "rg-test-arck-rg-eus",
