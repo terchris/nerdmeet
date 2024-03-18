@@ -1739,8 +1739,6 @@ az deployment group create \
   --template-file ./apim-bicep/testfunction-apis.bicep
 ```
 
-(I did nun it twice, because I had to change the swagger file)
-
 The output will be:
 
 ```json
@@ -1749,16 +1747,35 @@ The output will be:
   "location": null,
   "name": "testfunction-apis",
   "properties": {
-    "correlationId": "5d58496b-43d5-4cfb-a699-6776f613e94b",
+    "correlationId": "0c605991-c1b8-4fae-89fe-45d7cbdd5faf",
     "debugSetting": null,
-    "dependencies": [],
-    "duration": "PT18.2707487S",
+    "dependencies": [
+      {
+        "dependsOn": [
+          {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apiVersionSets/testfunction-versionset",
+            "resourceGroup": "rg-test-arck-rg-eus",
+            "resourceName": "intg-apim-eus/testfunction-versionset",
+            "resourceType": "Microsoft.ApiManagement/service/apiVersionSets"
+          }
+        ],
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apis/testfunction",
+        "resourceGroup": "rg-test-arck-rg-eus",
+        "resourceName": "intg-apim-eus/testfunction",
+        "resourceType": "Microsoft.ApiManagement/service/apis"
+      }
+    ],
+    "duration": "PT19.4285238S",
     "error": null,
     "mode": "Incremental",
     "onErrorDeployment": null,
     "outputResources": [
       {
         "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apis/testfunction",
+        "resourceGroup": "rg-test-arck-rg-eus"
+      },
+      {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apiVersionSets/testfunction-versionset",
         "resourceGroup": "rg-test-arck-rg-eus"
       }
     ],
@@ -1793,6 +1810,20 @@ The output will be:
               null
             ],
             "properties": null,
+            "resourceType": "service/apiVersionSets",
+            "zoneMappings": null
+          },
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
             "resourceType": "service/apis",
             "zoneMappings": null
           }
@@ -1800,9 +1831,9 @@ The output will be:
       }
     ],
     "provisioningState": "Succeeded",
-    "templateHash": "15332243142673318338",
+    "templateHash": "8833980896828475041",
     "templateLink": null,
-    "timestamp": "2024-03-18T12:46:08.861902+00:00",
+    "timestamp": "2024-03-18T15:11:50.359884+00:00",
     "validatedResources": null
   },
   "resourceGroup": "rg-test-arck-rg-eus",
@@ -1823,7 +1854,11 @@ curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -
 ```
 
 
+If you need to delete the function from APIM you can do it with this command:
 
+```bash
+az apim api delete --service-name intg-apim-eus --resource-group rg-test-arck-rg-eus --api-id testfunction --yes
+```
 
 
 
