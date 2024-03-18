@@ -1820,10 +1820,6 @@ Then you can use the key to test the api's.
 curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: <Your-APIM-Subscription-Key>"
 ```
 
-curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: 245631d049774cfd9b7a5d26a636d6f6"
-
-
-curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: a23a782f9656491b84aeae296735917a"
 
 
 
