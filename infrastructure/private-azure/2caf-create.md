@@ -1718,6 +1718,135 @@ Name           Location    Sku        PublisherEmail
 intg-apim-eus  East US     Developer  terchris.redcross@gmail.com
 ```
 
+### Create swagger file for the TestFunction
+
+We will use Bicep to define the two functions in the TestFunction and Bicep needs to refer to a swagger file.
+The swagger file for the two functions is in the file [testfunction.json](./swagger/testfunction.json).
+
+### Add the the TestFunction to the APIM
+
+We now need to add the functions to the APIM.
+We are doing that using Bicep. See the file [4bicep-setup](./4bicep-setup.md) for more information on how to set it up.
+
+The Bicep definition for setting up the two API's in TestFunction is in the file [testfunction-apis.bicep](./apim-bicep/testfunction-apis.bicep).
+
+To deploy the bicep file you do:
+In the parent folder of the bicep file do:
+
+```bash
+az deployment group create \
+  --resource-group rg-test-arck-rg-eus \
+  --template-file ./apim-bicep/testfunction-apis.bicep
+```
+
+The output will be:
+
+```json
+{
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Resources/deployments/testfunction-apis",
+  "location": null,
+  "name": "testfunction-apis",
+  "properties": {
+    "correlationId": "bf8c9767-ee44-4e58-a24e-c9eb56895182",
+    "debugSetting": null,
+    "dependencies": [],
+    "duration": "PT17.9860019S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apis/testfunction",
+        "resourceGroup": "rg-test-arck-rg-eus"
+      }
+    ],
+    "outputs": null,
+    "parameters": {
+      "apimServiceName": {
+        "type": "String",
+        "value": "intg-apim-eus"
+      },
+      "swaggerURL": {
+        "type": "String",
+        "value": "https://raw.githubusercontent.com/terchris/nerdmeet/main/infrastructure/private-azure/swagger/testfunction.json"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.ApiManagement",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "service/apis",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "15332243142673318338",
+    "templateLink": null,
+    "timestamp": "2024-03-18T09:09:13.606519+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "rg-test-arck-rg-eus",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}
+```
+
+
+in order to test the api's we need to use keys that we can only find in the portal. 
+Go to the portal intg-apim-eus | Subscriptions
+Then click on the tree dots next to the subscription named "Built-in all-access subscription" and select Show/hide keys.
+
+Then you can use the key to test the api's.
+
+```bash
+curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: <Your-APIM-Subscription-Key>"
+```
+
+curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: 245631d049774cfd9b7a5d26a636d6f6"
+
+
+curl -X GET "https://intg-apim-eus.azure-api.net/testfunction/v1/timefunction" -H "Ocp-Apim-Subscription-Key: a23a782f9656491b84aeae296735917a"
+
+
+
+
+
+
+
+# ------------ NOT working below this line ----------------
+
+Delete the two test functions
+
+```bash
+az apim api delete --service-name intg-apim-eus --resource-group rg-test-arck-rg-eus --api-id dayofweekfunction --yes
+
+az apim api delete --service-name intg-apim-eus --resource-group rg-test-arck-rg-eus --api-id timefunction --yes
+```
+
+Then list and verify that they are gone:
+
+```bash
+az apim api list --service-name intg-apim-eus --resource-group rg-test-arck-rg-eus --query "[].{name:name, path:path, serviceUrl:serviceUrl}" -o table
+```
+
 ### Add the the TestFunction to the APIM
 
 We now need to add the functions to the APIM.

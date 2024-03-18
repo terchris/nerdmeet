@@ -6,7 +6,7 @@
       "version": "v1"
     },
     "host": "func-intg-testfunction-int001-eus-01.azurewebsites.net",
-    "basePath": "/testfunction/v1",
+    "basePath": "/api",
     "schemes": [
       "https"
     ],
@@ -15,6 +15,7 @@
         "get": {
           "summary": "Get the current time",
           "description": "Returns the current time as a string.",
+          "operationId": "getTime",
           "responses": {
             "200": {
               "description": "Successful response",
@@ -35,6 +36,7 @@
         "get": {
           "summary": "Get the current day of the week",
           "description": "Returns the name of the current day of the week.",
+          "operationId": "getDayOfWeek",
           "responses": {
             "200": {
               "description": "Successful response",
