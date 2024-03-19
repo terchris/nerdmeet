@@ -6,8 +6,12 @@ I have set up an free Azure account for my email terchris.redcross@gmail.com
 
 We will use the domain arezibo.no 
 
+
 CAF defines some best practices and one of them is naming conventions.
 We will use the naming conventions from CAF.
+
+
+
 
 
 We follow the description  
@@ -669,37 +673,6 @@ And you should see: Hello World from host intg-vm1-eus!
 This task if you dont have a SSL certificate for the domain arezibo.no.
 Se the file 3ssl-create.md for detail output of the commands below.
 
-NB! as you see i use password JALLA! this is ofcourse not the pw i used.
-
-```bash
-brew install certbot
-```
-
-Now we can create the certificate using the DNS challenge. We want the certificate for all of the subdomains of arezibo.no.
-
-```bash
-certbot certonly --manual --preferred-challenges=dns --email terje@arezibo.no -d "*.arezibo.no" -d arezibo.no
-```
-
-Convert the Certificate to PFX Format
-
-```bash
-cd secrets
-
-openssl pkcs12 -export -out arezibo.no.pfx -inkey letsencrypt/live/arezibo.no/privkey.pem -in letsencrypt/live/arezibo.no/fullchain.pem -passout pass:JALLA!
-```
-
-check that you have the file:
-
-```bash
-ls -l arezibo.no.pfx
-```
-
-You should get this output:
-
-```text
--rw-------  1 terchris  staff  3088 Mar 15 18:17 arezibo.no.pfx
-```
 
 
 #### Upload the Certificate to Azure Application Gateway
@@ -1718,6 +1691,150 @@ Name           Location    Sku        PublisherEmail
 intg-apim-eus  East US     Developer  terchris.redcross@gmail.com
 ```
 
+### Route api.arezibo.no to the APIM
+
+#### Create or Update the HTTP Listener for api.arezibo.no
+
+We will now create or update the HTTP Listener for api.arezibo.no to point to the APIM.
+
+```bash
+az network application-gateway http-listener create \
+  --resource-group rg-test-arck-rg-eus \
+  --gateway-name intg-appgw-eus \
+  --name areziboHttpsListener \
+  --frontend-port appGatewayFrontendPort443 \
+  --ssl-cert areziboSSLCert \
+  --host-name api.arezibo.no
+```
+
+You will get this output:
+
+```json
+{
+  "etag": "W/\"e8a49d55-8fcb-44e2-a5e8-b45567b97e53\"",
+  "frontendIPConfiguration": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+    "resourceGroup": "rg-test-arck-rg-eus"
+  },
+  "frontendPort": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/frontendPorts/appGatewayFrontendPort443",
+    "resourceGroup": "rg-test-arck-rg-eus"
+  },
+  "hostName": "api.arezibo.no",
+  "hostNames": [],
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/httpListeners/areziboHttpsListener",
+  "name": "areziboHttpsListener",
+  "protocol": "Https",
+  "provisioningState": "Succeeded",
+  "requireServerNameIndication": true,
+  "resourceGroup": "rg-test-arck-rg-eus",
+  "sslCertificate": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/sslCertificates/areziboSSLCert",
+    "resourceGroup": "rg-test-arck-rg-eus"
+  },
+  "type": "Microsoft.Network/applicationGateways/httpListeners"
+}
+```
+
+
+#### Configure a Backend Pool for APIM
+
+Create a backend pool in your Application Gateway that points to your APIM instance. Use the APIM's public hostname:
+
+Name: intg-apim-be-pool-eus
+This name breakdown is as follows:
+
+intg: Abbreviation for the "integration" landing zone
+apim: Indicates the resource is related to Azure API Management.
+be-pool: Stands for "backend pool", describing the resource type.
+eus: Region abbreviation for East US
+
+```bash
+az network application-gateway address-pool create \
+  --resource-group rg-test-arck-rg-eus \
+  --gateway-name intg-appgw-eus \
+  --name intg-apim-be-pool-eus \
+  --servers intg-apim-eus.azure-api.net
+```
+
+You will get this output:
+
+```json
+{
+  "backendAddresses": [
+    {
+      "fqdn": "intg-apim-eus.azure-api.net"
+    }
+  ],
+  "etag": "W/\"e41040b7-65aa-475f-ade2-76ff5fc242ff\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/backendAddressPools/intg-apim-be-pool-eus",
+  "name": "intg-apim-be-pool-eus",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-test-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+}
+```
+
+
+#### Creating HTTP Settings
+
+This command creates HTTP settings named apimHttpSettings with HTTPS protocol, which might be suitable for secure communication with your APIM instance.
+
+```bash
+az network application-gateway http-settings create \
+  --resource-group rg-test-arck-rg-eus \
+  --gateway-name intg-appgw-eus \
+  --name apimHttpSettings \
+  --port 443 \
+  --protocol Https \
+  --cookie-based-affinity Disabled \
+  --timeout 30
+```
+
+You will get this output:
+
+```json
+{
+  "connectionDraining": {
+    "drainTimeoutInSec": 1,
+    "enabled": false
+  },
+  "cookieBasedAffinity": "Disabled",
+  "etag": "W/\"a491c194-64b1-431f-a6a4-d36fac2cb08b\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Network/applicationGateways/intg-appgw-eus/backendHttpSettingsCollection/apimHttpSettings",
+  "name": "apimHttpSettings",
+  "pickHostNameFromBackendAddress": false,
+  "port": 443,
+  "protocol": "Https",
+  "provisioningState": "Succeeded",
+  "requestTimeout": 30,
+  "resourceGroup": "rg-test-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+}
+```
+
+
+
+#### Create the Routing Rule
+
+This command explicitly routes requests captured by areziboHttpsListener to your APIM instance, using apimHttpSettings for the backend HTTP settings, ensuring that the setup is aligned with best practices for secure and efficient request handling.
+
+```bash
+az network application-gateway rule create \
+  --resource-group rg-test-arck-rg-eus \
+  --gateway-name intg-appgw-eus \
+  --name intg-apimgw-route-apim \
+  --http-listener areziboHttpsListener \
+  --address-pool intg-apim-be-pool-eus \
+  --http-settings apimHttpSettings \
+  --priority 110
+
+```
+
+
+
+
+
 ### Create swagger file for the TestFunction
 
 We will use Bicep to define the two functions in the TestFunction and Bicep needs to refer to a swagger file.
@@ -1742,71 +1859,7 @@ az deployment group create \
 The output will be:
 
 ```json
-{
-  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.Resources/deployments/testfunction-apis",
-  "location": null,
-  "name": "testfunction-apis",
-  "properties": {
-    "correlationId": "3bad21b6-f03c-46fa-ba43-353f1aca6ee5",
-    "debugSetting": null,
-    "dependencies": [],
-    "duration": "PT18.1185836S",
-    "error": null,
-    "mode": "Incremental",
-    "onErrorDeployment": null,
-    "outputResources": [
-      {
-        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-test-arck-rg-eus/providers/Microsoft.ApiManagement/service/intg-apim-eus/apis/testfunction",
-        "resourceGroup": "rg-test-arck-rg-eus"
-      }
-    ],
-    "outputs": null,
-    "parameters": {
-      "apimServiceName": {
-        "type": "String",
-        "value": "intg-apim-eus"
-      },
-      "swaggerURL": {
-        "type": "String",
-        "value": "https://raw.githubusercontent.com/terchris/nerdmeet/main/infrastructure/private-azure/swagger/testfunction.json"
-      }
-    },
-    "parametersLink": null,
-    "providers": [
-      {
-        "id": null,
-        "namespace": "Microsoft.ApiManagement",
-        "providerAuthorizationConsentState": null,
-        "registrationPolicy": null,
-        "registrationState": null,
-        "resourceTypes": [
-          {
-            "aliases": null,
-            "apiProfiles": null,
-            "apiVersions": null,
-            "capabilities": null,
-            "defaultApiVersion": null,
-            "locationMappings": null,
-            "locations": [
-              null
-            ],
-            "properties": null,
-            "resourceType": "service/apis",
-            "zoneMappings": null
-          }
-        ]
-      }
-    ],
-    "provisioningState": "Succeeded",
-    "templateHash": "1953865738011190352",
-    "templateLink": null,
-    "timestamp": "2024-03-18T15:41:37.378981+00:00",
-    "validatedResources": null
-  },
-  "resourceGroup": "rg-test-arck-rg-eus",
-  "tags": null,
-  "type": "Microsoft.Resources/deployments"
-}
+
 ```
 
 

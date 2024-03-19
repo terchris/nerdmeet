@@ -1,7 +1,19 @@
 # Create SSl certificate for the domain arezibo.no
 
 
+NB! as you see i use password JALLA! this is ofcourse not the pw i used.
+
+```bash
+brew install certbot
+```
+
+Now we can create the certificate using the DNS challenge. We want the certificate for all of the subdomains of arezibo.no.
+
+```bash
 sudo certbot certonly --manual '--preferred-challenges=dns' --email terje@arezibo.no -d '*.arezibo.no' -d arezibo.no
+```
+
+```text
 Password:
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
 
@@ -73,3 +85,25 @@ If you like Certbot, please consider supporting our work by:
  * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
  * Donating to EFF:                    https://eff.org/donate-le
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+```
+
+Convert the Certificate to PFX Format
+
+```bash
+cd secrets
+
+openssl pkcs12 -export -out arezibo.no.pfx -inkey privkey.pem -in fullchain.pem -passout pass:JALLA!
+```
+
+check that you have the file:
+
+```bash
+ls -l arezibo.no.pfx
+```
+
+You should get this output:
+
+```text
+-rw-------  1 terchris  staff  3088 Mar 15 18:17 arezibo.no.pfx
+```
