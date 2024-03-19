@@ -30,16 +30,27 @@ Subscription type: free trial $200 credit
 
 vnet name: vnet-eus
 vnet address space: 10.21.0.0/16
-api subnet: api-appgw-sn01-eus
-api subnet address space: 10.21.0.0/24
 
+Application Gateway subnet
+gateway subnet: appgw-backend-sn01-eus
+gateway subnet address space: 10.21.0.0/24
+gateway subnet vnet: vnet-eus
+
+nerd subnet
 nerd subnet name:nerd-backend-sn01-eus
 nerd subnet address space: 10.21.1.0/24
 nerd subnet vnet: vnet-eus
 
+k8s subnet
 k8s subnet name:k8s-backend-sn01-eus
 k8s subnet address space: 10.21.2.0/24
 k8s subnet vnet: vnet-eus
+
+api subnet 
+api subnet name:api-backend-sn01-eus
+api subnet address space: 10.21.3.0/24
+api subnet vnet: vnet-eus
+
 
 ## Application Gateway
 
@@ -47,14 +58,13 @@ application gateway name: appgw-eus
 public ip address: appgw-pip-eus
 public ip address: <fill in>
 vnet name: vnet-eus
-subnet name: api-appgw-sn01-eus
-SSL certificate name : ssl-christensen
+subnet name: appgw-backend-sn01-eus
+SSL certificate name : christensen-ssl-cert
 SSL setup: *.christensen.no (wildcard) termination at application gateway
-Description: Application gateway forwards:
 email: terje@christensen.no 
 organization: Christensen.no
 
-Rules:
+Description: Application gateway forwards:
 
 * api.christensen.no http and https to APIM in the api landing zone
 * vm1.christensen.no forwarded to the VM named nerd-vm01-eus in the nerd landing zone

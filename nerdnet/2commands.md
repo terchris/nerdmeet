@@ -62,12 +62,12 @@ vnet: 4 char that denotes it's a virtual network.
 eus: 3 char that Specifies the Azure region (East US) for the virtual network.
 ```
 
-Name: api-appgw-sn01-eus
+Name: nerd-backend-sn01-eus
 
 ```text
-api: 3 char that denotes it's the api landing zone.
-appgw: 5 char that denotes it's an application gateway.
-sn01: 4 char that denotes it's the first subnet in the api landing zone.
+nerd:  it's the nerd landing zone.
+backend: backend subnet.
+sn01: 4 char that denotes it's the first subnet in the nerd landing zone.
 eus: 3 char that Specifies the Azure region (East US) for the subnet.
 ```
 
@@ -166,15 +166,16 @@ output is:
 
 ### 3.2 Define and Create Subnets for Each Landing Zone
 
-#### API Landing Zone Subnet
+#### Application Gateway Subnet
 
-Subnet Name: api-appgw-sn01-eus
+Subnet Name: appgw-backend-sn01-eus
 Address Space: 10.21.0.0/24
 Create the subnet with the following command:
 
 ```bash
-az network vnet subnet create --name api-appgw-sn01-eus --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --address-prefix 10.21.0.0/24
+az network vnet subnet create --name appgw-backend-sn01-eus --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --address-prefix 10.21.0.0/24
 ```
+
 
 output is:
 
@@ -182,9 +183,9 @@ output is:
 {
   "addressPrefix": "10.21.0.0/24",
   "delegations": [],
-  "etag": "W/\"06bc24b8-bf0c-46e4-ae2b-703ba886a032\"",
-  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/api-appgw-sn01-eus",
-  "name": "api-appgw-sn01-eus",
+  "etag": "W/\"8365826f-c6c9-4a65-8105-7a5fcfd9dbd0\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/appgw-backend-sn01-eus",
+  "name": "appgw-backend-sn01-eus",
   "privateEndpointNetworkPolicies": "Disabled",
   "privateLinkServiceNetworkPolicies": "Enabled",
   "provisioningState": "Succeeded",
@@ -247,6 +248,35 @@ output is:
 }
 ```
 
+#### api Landing Zone Subnet
+
+Subnet Name: api-backend-sn01-eus
+Address Space: 10.21.3.0/24
+Create the subnet with the following command:
+
+```bash
+az network vnet subnet create --name api-backend-sn01-eus --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --address-prefix 10.21.3.0/24
+```
+
+output is:
+
+```json
+{
+  "addressPrefix": "10.21.3.0/24",
+  "delegations": [],
+  "etag": "W/\"8a460dc4-debd-4ad4-9361-355a950585b1\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/api-backend-sn01-eus",
+  "name": "api-backend-sn01-eus",
+  "privateEndpointNetworkPolicies": "Disabled",
+  "privateLinkServiceNetworkPolicies": "Enabled",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "type": "Microsoft.Network/virtualNetworks/subnets"
+}
+```
+
+
+
 ### 3.3 Verification of what is created
 
 List the Virtual Network
@@ -272,19 +302,26 @@ az network vnet subnet list --resource-group rg-terchris-arck-rg-eus --vnet-name
 output is:
 
 ```text
-AddressPrefix    Name                   PrivateEndpointNetworkPolicies    PrivateLinkServiceNetworkPolicies    ProvisioningState    ResourceGroup
----------------  ---------------------  --------------------------------  -----------------------------------  -------------------  -----------------------
-10.21.0.0/24     api-appgw-sn01-eus     Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
-10.21.1.0/24     nerd-backend-sn01-eus  Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
-10.21.2.0/24     k8s-backend-sn01-eus   Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
+AddressPrefix    Name                    PrivateEndpointNetworkPolicies    PrivateLinkServiceNetworkPolicies    ProvisioningState    ResourceGroup
+---------------  ----------------------  --------------------------------  -----------------------------------  -------------------  -----------------------
+10.21.1.0/24     nerd-backend-sn01-eus   Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
+10.21.2.0/24     k8s-backend-sn01-eus    Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
+10.21.3.0/24     api-backend-sn01-eus    Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
+10.21.0.0/24     appgw-backend-sn01-eus  Disabled                          Enabled                              Succeeded            rg-terchris-arck-rg-eus
 ```
 
 Verify Specific Resource Details
 
-If you need to inspect a specific subnet more closely, you can use the command below by replacing <subnet-name> with the name of the subnet you want to investigate (e.g., api-appgw-sn01-eus).
+If you need to inspect a specific subnet more closely, you can use the command below by replacing <subnet-name> with the name of the subnet you want to investigate (e.g., nerd-backend-sn01-eus).
 
 ```bash
 az network vnet subnet show --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name <subnet-name>
+```
+
+If you need to delete a subnet, you can use the command below by replacing <subnet-name> with the name of the subnet you want to delete (e.g., nerd-backend-sn01-eus).
+
+```bash
+az network vnet subnet delete --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name <subnet-name>
 ```
 
 ## Task 4: Application Gateway Configuration
@@ -336,6 +373,728 @@ IP Address is: 23.96.119.221
 Create the SSL certificate for the wildcard domain *.christensen.no using Certbot. And convert it to a PFX file.
 
 This is described in the file [3ssl-create.md](3ssl-create.md).
+
+### 4.3 Create Application Gateway
+
+Create the Application Gateway:
+
+Could not use the --min-capacity 0  and --max-capacity 1 Had to set the capacity to 1.
+
+```bash
+az network application-gateway create \
+    --name appgw-eus \
+    --location eastus \
+    --resource-group rg-terchris-arck-rg-eus \
+    --vnet-name vnet-eus \
+    --subnet appgw-backend-sn01-eus \
+    --sku Standard_v2 \
+    --http-settings-cookie-based-affinity Disabled \
+    --frontend-port 80 \
+    --http-settings-port 80 \
+    --http-settings-protocol Http \
+    --public-ip-address appgw-pip-eus \
+    --capacity 1 \
+    --priority 10    
+```
+
+Output is:
+
+```json
+{
+  "applicationGateway": {
+    "backendAddressPools": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/appGatewayBackendPool",
+        "name": "appGatewayBackendPool",
+        "properties": {
+          "backendAddresses": [],
+          "provisioningState": "Succeeded",
+          "requestRoutingRules": [
+            {
+              "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule1",
+              "resourceGroup": "rg-terchris-arck-rg-eus"
+            }
+          ]
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+      }
+    ],
+    "backendHttpSettingsCollection": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+        "name": "appGatewayBackendHttpSettings",
+        "properties": {
+          "connectionDraining": {
+            "drainTimeoutInSec": 1,
+            "enabled": false
+          },
+          "cookieBasedAffinity": "Disabled",
+          "pickHostNameFromBackendAddress": false,
+          "port": 80,
+          "protocol": "Http",
+          "provisioningState": "Succeeded",
+          "requestRoutingRules": [
+            {
+              "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule1",
+              "resourceGroup": "rg-terchris-arck-rg-eus"
+            }
+          ],
+          "requestTimeout": 30
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+      }
+    ],
+    "backendSettingsCollection": [],
+    "frontendIPConfigurations": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+        "name": "appGatewayFrontendIP",
+        "properties": {
+          "httpListeners": [
+            {
+              "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+              "resourceGroup": "rg-terchris-arck-rg-eus"
+            }
+          ],
+          "privateIPAllocationMethod": "Dynamic",
+          "provisioningState": "Succeeded",
+          "publicIPAddress": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/publicIPAddresses/appgw-pip-eus",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          }
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations"
+      }
+    ],
+    "frontendPorts": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+        "name": "appGatewayFrontendPort",
+        "properties": {
+          "httpListeners": [
+            {
+              "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+              "resourceGroup": "rg-terchris-arck-rg-eus"
+            }
+          ],
+          "port": 80,
+          "provisioningState": "Succeeded"
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+      }
+    ],
+    "gatewayIPConfigurations": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/gatewayIPConfigurations/appGatewayFrontendIP",
+        "name": "appGatewayFrontendIP",
+        "properties": {
+          "provisioningState": "Succeeded",
+          "subnet": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/appgw-backend-sn01-eus",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          }
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+      }
+    ],
+    "httpListeners": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+        "name": "appGatewayHttpListener",
+        "properties": {
+          "frontendIPConfiguration": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          },
+          "frontendPort": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          },
+          "hostNames": [],
+          "protocol": "Http",
+          "provisioningState": "Succeeded",
+          "requestRoutingRules": [
+            {
+              "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule1",
+              "resourceGroup": "rg-terchris-arck-rg-eus"
+            }
+          ],
+          "requireServerNameIndication": false
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/httpListeners"
+      }
+    ],
+    "listeners": [],
+    "loadDistributionPolicies": [],
+    "operationalState": "Running",
+    "privateEndpointConnections": [],
+    "privateLinkConfigurations": [],
+    "probes": [],
+    "provisioningState": "Succeeded",
+    "redirectConfigurations": [],
+    "requestRoutingRules": [
+      {
+        "etag": "W/\"cdcf95a4-a72d-4af2-8c52-ca9aab9a1ddb\"",
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule1",
+        "name": "rule1",
+        "properties": {
+          "backendAddressPool": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/appGatewayBackendPool",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          },
+          "backendHttpSettings": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          },
+          "httpListener": {
+            "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+            "resourceGroup": "rg-terchris-arck-rg-eus"
+          },
+          "priority": 10,
+          "provisioningState": "Succeeded",
+          "ruleType": "Basic"
+        },
+        "resourceGroup": "rg-terchris-arck-rg-eus",
+        "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+      }
+    ],
+    "resourceGuid": "efea21d0-e5ee-4caf-ae77-738a3bd7c848",
+    "rewriteRuleSets": [],
+    "routingRules": [],
+    "sku": {
+      "capacity": 1,
+      "family": "Generation_1",
+      "name": "Standard_v2",
+      "tier": "Standard_v2"
+    },
+    "sslCertificates": [],
+    "sslProfiles": [],
+    "trustedClientCertificates": [],
+    "trustedRootCertificates": [],
+    "urlPathMaps": []
+  }
+}
+````
+
+To verify the Application Gateway, you can use the following command:
+
+```bash
+az network application-gateway show --name appgw-eus --resource-group rg-terchris-arck-rg-eus
+```
+
+### 4.4 Upload SSL Certificate to Azure
+
+Make sure you have the PFX file and the password for the PFX file.
+
+```bash
+az network application-gateway ssl-cert create \
+    --gateway-name appgw-eus \
+    --resource-group rg-terchris-arck-rg-eus \
+    --name christensen-ssl-cert \
+    --cert-file ../secrets/cert/christensen.no.pfx \
+    --cert-password JALLA!
+```
+
+output is:
+
+```json
+{
+  "etag": "W/\"eabc29d3-de5d-4104-b68b-75954417992a\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/sslCertificates/christensen-ssl-cert",
+  "name": "christensen-ssl-cert",
+  "provisioningState": "Succeeded",
+  "publicCertData": "long base64 string",
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/sslCertificates"
+}
+```
+
+
+### 4.5 Create https frontend port
+
+```bash
+az network application-gateway frontend-port create \
+    --gateway-name appgw-eus \
+    --resource-group rg-terchris-arck-rg-eus \
+    --name appGatewayHttpsFrontendPort \
+    --port 443
+```
+
+output is:
+
+```json
+{
+  "etag": "W/\"45d88292-b84a-4d4e-a34b-db4c06b26909\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayHttpsFrontendPort",
+  "name": "appGatewayHttpsFrontendPort",
+  "port": 443,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/frontendPorts"
+}
+```
+
+List the frontend ports:
+
+```bash
+az network application-gateway frontend-port list --gateway-name appgw-eus --resource-group rg-terchris-arck-rg-eus --output table
+```
+
+output is:
+
+```text
+Name                         Port    ProvisioningState    ResourceGroup
+---------------------------  ------  -------------------  -----------------------
+appGatewayFrontendPort       80      Succeeded            rg-terchris-arck-rg-eus
+appGatewayHttpsFrontendPort  443     Succeeded            rg-terchris-arck-rg-eus
+```
+
+
+### 4.6 Create pool (routing to landing zones)
+
+Application Gateway needs a backend pool to route traffic to. This is done by creating a backend pool for each landing zone.
+The pool can be just one IP or it can be a list of IPs.
+
+
+
+#### 4.6.1 VM in nerd Landing Zone
+
+Get the private IP address of the NIC and store it in a variable:
+I cant dind a az command that give me the IP address of a VM or its NIC. So we have to do some tricks.
+
+```bash
+NERDVM01_IP=$(az vm run-command invoke --command-id RunShellScript --name nerd-vm01-eus --resource-group rg-terchris-arck-rg-eus --scripts "hostname -I | awk '{print \$1}'") && echo $ip | awk '/\[stdout\]/{getline; print; exit}'
+
+
+echo $NERDVM01_IP
+```
+
+helvete - vet at IP er 10.21.1.4
+
+Use the NERDVM01_IP to create an address pool for the Application Gateway:
+  
+  ```bash
+az network application-gateway address-pool create \
+    --gateway-name appgw-eus \
+    --resource-group rg-terchris-arck-rg-eus \
+    --name vm1-nerd-ip-pool \
+    --servers $NERDVM01_IP
+```
+
+output is:
+
+```json
+{
+  "backendAddresses": [
+    {
+      "ipAddress": "10.21.1.4"
+    }
+  ],
+  "etag": "W/\"965387fb-caa7-456e-ac06-4ca6ca4aa786\"",
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/vm1-nerd-ip-pool",
+  "name": "vm1-nerd-ip-pool",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+}
+```
+
+
+### 4.7 Create Listener's for the Application Gateway
+
+
+#### 4.7.1 Create Listener for vm1.christensen.no 
+
+There must be two listeneres. One for HTTP and one for HTTPS.
+
+Create the HTTP listener for the subdomain vm1.christensen.no:
+
+```bash
+az network application-gateway http-listener create \
+    --resource-group rg-terchris-arck-rg-eus \
+    --name vm1-http-listener \
+    --frontend-port appGatewayFrontendPort \
+    --gateway-name appgw-eus \
+    --frontend-ip appGatewayFrontendIP \
+    --host-name "vm1.christensen.no"
+
+```
+
+output is:
+
+```json
+{
+  "etag": "W/\"6e1dfa72-d149-4a62-a22d-5df0edeb5019\"",
+  "frontendIPConfiguration": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+    "resourceGroup": "rg-terchris-arck-rg-eus"
+  },
+  "frontendPort": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+    "resourceGroup": "rg-terchris-arck-rg-eus"
+  },
+  "hostName": "vm1.christensen.no",
+  "hostNames": [],
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/vm1-http-listener",
+  "name": "vm1-http-listener",
+  "protocol": "Http",
+  "provisioningState": "Succeeded",
+  "requireServerNameIndication": false,
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "type": "Microsoft.Network/applicationGateways/httpListeners"
+}
+```
+
+Create the HTTPS listener for the subdomain vm1.christensen.no:
+
+```bash
+az network application-gateway http-listener create \
+    --resource-group rg-terchris-arck-rg-eus \
+    --name vm1-https-listener \
+    --frontend-port appGatewayHttpsFrontendPort \
+    --gateway-name appgw-eus \
+    --frontend-ip appGatewayFrontendIP \
+    --host-name "vm1.christensen.no" \
+    --ssl-cert christensen-ssl-cert
+```
+
+output is:
+
+```json
+{
+  "etag": "W/\"bd441d6d-99d6-447f-8b17-55bfaadb7b08\"",
+  "frontendIPConfiguration": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+    "resourceGroup": "rg-terchris-arck-rg-eus"
+  },
+  "frontendPort": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayHttpsFrontendPort",
+    "resourceGroup": "rg-terchris-arck-rg-eus"
+  },
+  "hostName": "vm1.christensen.no",
+  "hostNames": [],
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/vm1-https-listener",
+  "name": "vm1-https-listener",
+  "protocol": "Https",
+  "provisioningState": "Succeeded",
+  "requireServerNameIndication": true,
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "sslCertificate": {
+    "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/sslCertificates/christensen-ssl-cert",
+    "resourceGroup": "rg-terchris-arck-rg-eus"
+  },
+  "type": "Microsoft.Network/applicationGateways/httpListeners"
+}
+```
+
+### 4.8 Create Rules for the Application Gateway
+
+also here here are HTTP and HTTPS rules.
+
+To list al rules in a table:
+
+```bash
+az network application-gateway rule list --gateway-name appgw-eus --resource-group rg-terchris-arck-rg-eus --output table
+```
+
+#### 4.8.1 Create Rule for vm1.christensen.no
+
+Create the HTTP rule for the subdomain vm1.christensen.no:
+
+```bash
+az network application-gateway rule create \
+    --resource-group rg-terchris-arck-rg-eus \
+    --gateway-name appgw-eus \
+    --name rule-vm1-http \
+    --http-listener vm1-http-listener \
+    --rule-type Basic \
+    --address-pool vm1-nerd-ip-pool \
+    --priority 100
+
+```
+
+output is:
+
+```json
+{
+  "backendAddressPools": [
+    {
+      "backendAddresses": [],
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/appGatewayBackendPool",
+      "name": "appGatewayBackendPool",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+    },
+    {
+      "backendAddresses": [
+        {
+          "ipAddress": "10.21.1.4"
+        }
+      ],
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/vm1-nerd-ip-pool",
+      "name": "vm1-nerd-ip-pool",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+    }
+  ],
+  "backendHttpSettingsCollection": [
+    {
+      "connectionDraining": {
+        "drainTimeoutInSec": 1,
+        "enabled": false
+      },
+      "cookieBasedAffinity": "Disabled",
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+      "name": "appGatewayBackendHttpSettings",
+      "pickHostNameFromBackendAddress": false,
+      "port": 80,
+      "protocol": "Http",
+      "provisioningState": "Succeeded",
+      "requestTimeout": 30,
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/backendHttpSettingsCollection"
+    }
+  ],
+  "backendSettingsCollection": [],
+  "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+  "frontendIPConfigurations": [
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+      "name": "appGatewayFrontendIP",
+      "privateIPAllocationMethod": "Dynamic",
+      "provisioningState": "Succeeded",
+      "publicIPAddress": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/publicIPAddresses/appgw-pip-eus",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations"
+    }
+  ],
+  "frontendPorts": [
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+      "name": "appGatewayFrontendPort",
+      "port": 80,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/frontendPorts"
+    },
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayHttpsFrontendPort",
+      "name": "appGatewayHttpsFrontendPort",
+      "port": 443,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/frontendPorts"
+    }
+  ],
+  "gatewayIPConfigurations": [
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/gatewayIPConfigurations/appGatewayFrontendIP",
+      "name": "appGatewayFrontendIP",
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "subnet": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/appgw-backend-sn01-eus",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+    }
+  ],
+  "httpListeners": [
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "frontendIPConfiguration": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "frontendPort": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "hostNames": [],
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+      "name": "appGatewayHttpListener",
+      "protocol": "Http",
+      "provisioningState": "Succeeded",
+      "requireServerNameIndication": false,
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/httpListeners"
+    },
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "frontendIPConfiguration": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "frontendPort": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayFrontendPort",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "hostName": "vm1.christensen.no",
+      "hostNames": [],
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/vm1-http-listener",
+      "name": "vm1-http-listener",
+      "protocol": "Http",
+      "provisioningState": "Succeeded",
+      "requireServerNameIndication": false,
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/httpListeners"
+    },
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "frontendIPConfiguration": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendIPConfigurations/appGatewayFrontendIP",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "frontendPort": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/frontendPorts/appGatewayHttpsFrontendPort",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "hostName": "vm1.christensen.no",
+      "hostNames": [],
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/vm1-https-listener",
+      "name": "vm1-https-listener",
+      "protocol": "Https",
+      "provisioningState": "Succeeded",
+      "requireServerNameIndication": true,
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "sslCertificate": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/sslCertificates/christensen-ssl-cert",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "type": "Microsoft.Network/applicationGateways/httpListeners"
+    }
+  ],
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus",
+  "listeners": [],
+  "loadDistributionPolicies": [],
+  "location": "eastus",
+  "name": "appgw-eus",
+  "operationalState": "Running",
+  "privateEndpointConnections": [],
+  "privateLinkConfigurations": [],
+  "probes": [],
+  "provisioningState": "Succeeded",
+  "redirectConfigurations": [],
+  "requestRoutingRules": [
+    {
+      "backendAddressPool": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/appGatewayBackendPool",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "backendHttpSettings": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "httpListener": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/appGatewayHttpListener",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule1",
+      "name": "rule1",
+      "priority": 10,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "ruleType": "Basic",
+      "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+    },
+    {
+      "backendAddressPool": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendAddressPools/vm1-nerd-ip-pool",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "backendHttpSettings": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/backendHttpSettingsCollection/appGatewayBackendHttpSettings",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "httpListener": {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/httpListeners/vm1-http-listener",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      },
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/requestRoutingRules/rule-vm1-http",
+      "name": "rule-vm1-http",
+      "priority": 100,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "ruleType": "Basic",
+      "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
+    }
+  ],
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "resourceGuid": "efea21d0-e5ee-4caf-ae77-738a3bd7c848",
+  "rewriteRuleSets": [],
+  "routingRules": [],
+  "sku": {
+    "capacity": 1,
+    "name": "Standard_v2",
+    "tier": "Standard_v2"
+  },
+  "sslCertificates": [
+    {
+      "etag": "W/\"76a6a490-7047-4846-80de-eda9de8a5c17\"",
+      "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/applicationGateways/appgw-eus/sslCertificates/christensen-ssl-cert",
+      "name": "christensen-ssl-cert",
+      "provisioningState": "Succeeded",
+      "publicCertData": "long base64 string",
+      "resourceGroup": "rg-terchris-arck-rg-eus",
+      "type": "Microsoft.Network/applicationGateways/sslCertificates"
+    }
+  ],
+  "sslProfiles": [],
+  "tags": {},
+  "trustedClientCertificates": [],
+  "trustedRootCertificates": [],
+  "type": "Microsoft.Network/applicationGateways",
+  "urlPathMaps": []
+}
+```
+
+Create the HTTPS rule for the subdomain vm1.christensen.no:
+
+```bash
+az network application-gateway rule create \
+    --resource-group rg-terchris-arck-rg-eus \
+    --gateway-name appgw-eus \
+    --name rule-vm1-https \
+    --http-listener vm1-https-listener \
+    --rule-type Basic \
+    --address-pool vm1-nerd-ip-pool \
+    --priority 110
+```
+
+output is:
+
+```json
+long ling of json
+```
+
+
+
 
 ## Task 5: nerd Landing zone setup
 
@@ -841,9 +1600,9 @@ But leave it running as we will need it when testing the application gateway.
 ## Task 7: api Landing Zone Setup
 
 The api landing zone will have an API Management service (APIM).
-The APIM will get its traffic from the Application Gateway and it will be placed in the subnet api-appgw-sn01-eus and it cannot be accessed from the internet.
+The APIM will get its traffic from the Application Gateway and it will be placed in the subnet api-backend-sn01-eus and it cannot be accessed from the internet.
 
-There will also be two Azure functions that will be used to test the APIM. The Azure functions will be placed in the subnet api-appgw-sn01-eus and they cannot be accessed from the internet.
+( This is not possible in the cheapest version There will also be two Azure functions that will be used to test the APIM. The Azure functions will be placed in the subnet api-backend-sn01-eus and and they cannot be accessed from the internet.)
 
 It is best to set up Azure Functions first and make sure they work before adding them to APIM.
 
@@ -971,7 +1730,7 @@ TODO: This is not done yet.
 To set the storage account to only be accessible from the subnet api-backend-sn01-eus we need to get the subnet id:
 
 ```bash
-APISUBNET_ID=$(az network vnet subnet show --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name api-appgw-sn01-eus --query id -o tsv)
+APISUBNET_ID=$(az network vnet subnet show --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name api-backend-sn01-eus --query id -o tsv)
 
 echo $APISUBNET_ID
 ```
@@ -979,7 +1738,7 @@ echo $APISUBNET_ID
 Output is:
 
 ```text
-/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/api-appgw-sn01-eus
+/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Network/virtualNetworks/vnet-eus/subnets/api-backend-sn01-eus
 ```
 
 Set the storage account to only be accessible from the subnet api-backend-sn01-eus with the following command:
@@ -1012,14 +1771,11 @@ Hot           False                    False                          2024-03-19
 
 ### 7.2 Create the Azure Functions
 
-The Azure Functions will be used to test the APIM. The Azure functions will be placed in the subnet api-appgw-sn01-eus and they cannot be accessed from the internet.
+( not possible in the cheapest version The Azure Functions will be used to test the APIM. The Azure functions will be placed in the subnet api-backend-sn01-eus and they cannot be accessed from the internet.)
 
 The test function will be named: func-api-testfunction-int001-eus-01
-
 It will use the storage account named: stapitestfnint001eus01
-
 The function runtime is node as it will be implemented in javascript.
-
 To save costs it is created as a consumption plan. It means that it cannot be isolated to a specific subnet. Se more below about securing the function.
 
 ```bash
@@ -1248,6 +2004,15 @@ App settings have been redacted. Use `az webapp/logicapp/functionapp config apps
 }
 ```
 
+If you need to delete the function app you can do it with this command:
+
+```bash
+az functionapp delete --name func-api-testfunction-int001-eus-01 --resource-group rg-terchris-arck-rg-eus
+```
+
+
+
+
 #### 7.2.1 Securing Azure Functions
 
 TODO: This is not done yet - are we going to use the premium plan?
@@ -1280,7 +2045,7 @@ az functionapp create \
 Step 3: Enable VNet Integration for the Function App
 
 ```bash
-SUBNET_ID=$(az network vnet subnet show --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name api-appgw-sn01-eus --query id -o tsv)
+SUBNET_ID=$(az network vnet subnet show --resource-group rg-terchris-arck-rg-eus --vnet-name vnet-eus --name api-backend-sn01-eus --query id -o tsv)
 ```
 
 Then, integrate your Function App with the subnet:
@@ -1572,3 +2337,93 @@ az deployment group create \
   --resource-group rg-terchris-arck-rg-eus \
   --template-file ./landing-api/apim-bicep/testfunction-apis.bicep
 ```
+
+Output is:
+
+```json
+{
+  "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.Resources/deployments/testfunction-apis",
+  "location": null,
+  "name": "testfunction-apis",
+  "properties": {
+    "correlationId": "ff90961d-db26-4d8d-8275-60b97c040ee9",
+    "debugSetting": null,
+    "dependencies": [],
+    "duration": "PT18.4052816S",
+    "error": null,
+    "mode": "Incremental",
+    "onErrorDeployment": null,
+    "outputResources": [
+      {
+        "id": "/subscriptions/2c39e355-0751-4cdf-81d7-737b0005c0ba/resourceGroups/rg-terchris-arck-rg-eus/providers/Microsoft.ApiManagement/service/apim-api-nerd-eus/apis/testFunctionApi",
+        "resourceGroup": "rg-terchris-arck-rg-eus"
+      }
+    ],
+    "outputs": {
+      "apiId": {
+        "type": "String",
+        "value": "testFunctionApi"
+      }
+    },
+    "parameters": {
+      "apiManagementServiceName": {
+        "type": "String",
+        "value": "apim-api-nerd-eus"
+      },
+      "apiName": {
+        "type": "String",
+        "value": "testFunctionApi"
+      },
+      "apiPath": {
+        "type": "String",
+        "value": "testfunction"
+      },
+      "swaggerFileUrl": {
+        "type": "String",
+        "value": "https://raw.githubusercontent.com/terchris/nerdmeet/main/nerdnet/landing-api/swagger/testfunction.json"
+      }
+    },
+    "parametersLink": null,
+    "providers": [
+      {
+        "id": null,
+        "namespace": "Microsoft.ApiManagement",
+        "providerAuthorizationConsentState": null,
+        "registrationPolicy": null,
+        "registrationState": null,
+        "resourceTypes": [
+          {
+            "aliases": null,
+            "apiProfiles": null,
+            "apiVersions": null,
+            "capabilities": null,
+            "defaultApiVersion": null,
+            "locationMappings": null,
+            "locations": [
+              null
+            ],
+            "properties": null,
+            "resourceType": "service/apis",
+            "zoneMappings": null
+          }
+        ]
+      }
+    ],
+    "provisioningState": "Succeeded",
+    "templateHash": "10224035344021152217",
+    "templateLink": null,
+    "timestamp": "2024-03-19T16:12:25.371840+00:00",
+    "validatedResources": null
+  },
+  "resourceGroup": "rg-terchris-arck-rg-eus",
+  "tags": null,
+  "type": "Microsoft.Resources/deployments"
+}
+```
+
+
+TODO: get functions to work via APIM
+
+
+## 8. Create the Azure Application Gateway
+
