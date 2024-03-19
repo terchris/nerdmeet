@@ -1552,12 +1552,10 @@ apim-api-nerd-eus  East US     Developer  terje@christensen.no
 
 ### 7.5 Adding the Azure Functions to the APIM
 
-
 #### 7.5.1 Create swagger file for the TestFunction
 
 We will use Bicep to define the two functions in the TestFunction and Bicep needs to refer to a swagger file.
 The swagger file for the two functions is in the file [testfunction.json](./landing-api/swagger/testfunction.json).
-
 
 #### 7.5.2 Import the swagger file to the APIM using Bicep
 
@@ -1569,3 +1567,8 @@ The Bicep definition for setting up the two API's in TestFunction is in the file
 To deploy the bicep file you do:
 In the parent folder of the bicep file do:
 
+```bash
+az deployment group create \
+  --resource-group rg-terchris-arck-rg-eus \
+  --template-file ./landing-api/apim-bicep/testfunction-apis.bicep
+```

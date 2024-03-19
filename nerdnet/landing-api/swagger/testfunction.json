@@ -1,40 +1,39 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "TesT Function APIs",
-    "description": "APIs for DayOfWeekFunction and TimeFunction",
-    "version": "1.0"
+    "title": "TestFunction ApI",
+    "description": "ApI for accessing Test Functions through Azure ApI Management",
+    "version": "1.0.0"
   },
+  "host": "apim-api-nerd-eus.azure-api.net",
   "basePath": "/testfunction",
   "schemes": ["https"],
   "paths": {
-    "/DayOfWeekFunction": {
+    "/dayofweekfunction": {
       "get": {
-        "summary": "Get the current day of the week",
-        "description": "Returns the name of the current day of the week.",
-        "operationId": "getDayOfWeek",
+        "summary": "Gets the day of the week",
+        "operationId": "DayOfWeekFunction",
+        "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Success",
             "schema": {
-              "type": "string",
-              "example": "Today is: Monday"
+              "type": "string"
             }
           }
         }
       }
     },
-    "/TimeFunction": {
+    "/timefunction": {
       "get": {
-        "summary": "Get the current time",
-        "description": "Returns the current time as a string.",
-        "operationId": "getTime",
+        "summary": "Gets the current time",
+        "operationId": "TimeFunction",
+        "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Success",
             "schema": {
-              "type": "string",
-              "example": "The current time is: 10:00:00 AM"
+              "type": "string"
             }
           }
         }
