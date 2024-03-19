@@ -22,10 +22,12 @@ The github for the project is https://github.com/terchris/nerdmeet and it is set
 In the repository we store all files in the folder named nerdnet and use subfolders when needed.
 
 The file `0overall-structure.md` contains the overall structure of the landing zones.
-You should start by reading that file and use it for reference while setting up the landing zones.
+The file `2commands.md` contains all commands that is already done and how they are done.
 
 Tasks:
 
 1. Analyze the 0overall-structure.md and ask questions if something is unclear.
-2. Analyze the 0overall-structure.md and create a list of tasks that need to be done to set up the landing zones. Name the tasks so that we can refer to them during the setup.
+2. Analyze the 2commands.md to see what tasks that is already done and how they are done.
+3. Create a task list of the tasks needed to finish the setup.
 3. Focus on one task at a time and do not move on to the next task before the first is completed.
+
