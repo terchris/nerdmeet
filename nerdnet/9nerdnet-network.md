@@ -43,32 +43,20 @@ graph LR
    Firewall --> vm01
    apim -.-> testfunction
    aks -.-> nginx
-
-
 ```
 
+The landing zones are:
 
+* Landing Zone: api, api for short.
+* Landing Zone: nerdmeet, nerd for short.
+* Landing Zone: kubernetes, k8s for short.
 
+The landing zone api is set up for testing Azure API Management and Azure Functions.
 
-## The Zones
+The landing zone nerdmeet is set up for testing AI and different VMs.
 
-```mermaid
-graph LR;
- client([client])-. web or API <br> request .->ingress[Azure Application Gateway];
- ingress-->|routing rule|service[dispatcher?];
- subgraph Firewall functionality
- ingress;
- service-->pod1[Landing zone 1];
- service-->pod2[Landing zone 2];
- service-->pod3[Landing zone 3];
- end
- classDef plain fill:#ddd,stroke:#fff,stroke-width:4px,color:#000;
- classDef k8s fill:#326ce5,stroke:#fff,stroke-width:4px,color:#fff;
- classDef cluster fill:#fff,stroke:#bbb,stroke-width:2px,color:#326ce5;
- class ingress,service,pod1,pod2,pod3 k8s;
- class client plain;
- class cluster cluster;
- ```
+The landing zone kubernetes is set up for testing kubernetes.
 
-Using CAF terminology we can define the network architecture in terms of landing zones.
+In front of all landing zones there is an Application Gateway. The Application Gateway terminates SSL and routes traffic based on subdomain. The Application Gateway is the only resource with a public IP address.
 
+DNS *.christensen.no is pointing to the public IP address of the Application Gateway.
