@@ -1,5 +1,5 @@
 # nerdmeet
-NerdMeet stuff. A kubernetes play cluster an AI fun stuff
+Network for nerds that play with new technologies. 
 
 ## nerdnet
 

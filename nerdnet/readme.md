@@ -24,5 +24,13 @@ The [3ssl-create.md](3ssl-create.md) describes how to create a wildcard SSL cert
 
 The [4bicep-setup.md](4bicep-setup.md) describes how install stuff needed for using Bicep.
 
+The [5cloud-azure.md](5cloud-azure.md) describes the Azure resources used in the network.
+
+The [6naming-caf.md](6naming-caf.md) describes how to name resources according to the Cloud Adoption Framework.
+
+The [7network-architecture-security.md](7network-architecture-security.md) describes the network architecture and security.
+
+The [8howto-diagram.md](8howto-diagram.md) describes how to create diagrams that is used to document the nerdnet network.
+
 And last, but not least, [1prompt.md](1prompt.md) how to set catGPT so that it helps you to st up the system.
 
