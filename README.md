@@ -1,4 +1,13 @@
 # NerdMeet
+
+## Latest news
+
+* NerdNet playground is up and running. Read more about it [here](nerdnet/readme.md).
+* NerdMeet #3 yesterday.
+* We started discussing how to create a hackathon event in October 2024.
+
+## NerdMeet community
+
 NerdMeet is a community for nerds that use technology to help people in need. At the same time we meet, share and learn new technologies.
 
 Slogan: Helping the helpers.
@@ -29,6 +38,8 @@ The event will be held in Oslo, Norway. October 2024.
 | 2024-01-17 | 16:00 - 18:00 | Red Cross | [First meetup](meetups/nerdmeet-meetup-1.md) |
 
 ## NerdNet playgorund
+
+We have a playground where we can test new technologies. The playground is called NerdNet. Read about it [here](nerdnet/readme.md).
 
 ```mermaid
 graph LR

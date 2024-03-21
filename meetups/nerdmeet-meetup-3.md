@@ -2,8 +2,7 @@
 
 ## Oppsummering NerdMeet #3
 
-
-
+TODO
 
 ## Innkalling NerdMeet #3
 
