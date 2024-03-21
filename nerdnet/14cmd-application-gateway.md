@@ -4,6 +4,8 @@
 
 All traffic to the landing zones will be routed through an Application Gateway. The Application Gateway will be configured to route traffic based on the subdomain.
 
+This file contains all commands to set up the Application Gateway. For overview see the [nerdnet firewall](9nerdnet-firewall.md) file.
+
 ### Public IP for Application Gateway
 
 Create Public IP Address:

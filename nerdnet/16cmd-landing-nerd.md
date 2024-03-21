@@ -5,6 +5,8 @@
 The nerd landing zone will by default have just one VM for testing purposes. Named nerd-vm01-eus.
 The VM will be placed in the subnet nerd-backend-sn01-eus and it cannot be accessed from the internet.
 
+This file contains all commands to set up the nerd landing zone. For overview see the [Network Landing Zones](9nerdnet-network.md) file.
+
 ### Create network for test VM
 
 Create the network interface for the test VM.

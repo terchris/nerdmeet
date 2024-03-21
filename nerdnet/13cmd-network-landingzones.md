@@ -4,6 +4,8 @@
 
 There will be one virtual network (VNet) with three subnets. One for each landing zone.
 
+This file contains all commands to set up the network infrastructure for the landing zones. For overview see the [Network Landing Zones](9nerdnet-network.md) file.
+
 ### Create the Virtual Network (VNet)
 
 ```bash

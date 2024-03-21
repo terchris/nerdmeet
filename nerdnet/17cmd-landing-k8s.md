@@ -6,6 +6,8 @@ The k8s landing zone have kubernetes installed and running. The cluster will jus
 The container will be a simple web server that returns the hostname of the container.
 The cluster be placed on the subnet k8s-backend-sn01-eus and it cannot be accessed from the internet.
 
+This file contains all commands to set up the k8s landing zone. For overview see the [Network Landing Zones](9nerdnet-network.md) file.
+
 We will create it as a free tier cluster.
 
 ### Create the AKS cluster

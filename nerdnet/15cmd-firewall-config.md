@@ -4,6 +4,8 @@
 
 we are using an Application Gateway as a firewall. The Application Gateway is the only resource with a public IP address. The Application Gateway terminates SSL and routes traffic based on subdomain.
 
+This file contains all commands to set up the rules and SSL for the Application Gateway. For overview see the [nerdnet firewall](9nerdnet-firewall.md) file.
+
 ### Upload SSL Certificate to Azure
 
 Make sure you have the PFX file and the password for the PFX file.
@@ -501,4 +503,3 @@ output is:
 ```json
 long ling of json
 ```
-

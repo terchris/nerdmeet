@@ -1,6 +1,6 @@
 # nerdnet network
 
-This is the current description of the nerdnet network. For a conseptual overview of the network see [7concept-network-architecture-security.md](7concept-network-architecture-security.md).
+In front of all landing zones there is an Application Gateway. The Application Gateway terminates SSL and routes traffic based on subdomain. The Application Gateway is the only resource with a public IP address.
 
 
 ## Landing Zones
@@ -47,38 +47,35 @@ graph LR
 
 The landing zones are:
 
-* Landing Zone: api, api for short.
-* Landing Zone: nerdmeet, nerd for short.
-* Landing Zone: kubernetes, k8s for short.
+| Landing Zone | Long name | Description |
+|--------------|------------|-------------|
+| api          | api        | Azure API Management and Azure Functions |
+| nerd     | nerdmeet       | AI and different VMs |
+| k8s   | kubernetes        | Kubernetes cluster |
 
-The landing zone api is set up for testing Azure API Management and Azure Functions.
+Documentation on how to set up the landing zones can be found in the [Application Gateway](14cmd-application-gateway.md) folder.
 
-The landing zone nerdmeet is set up for testing AI and different VMs.
+## Network info
 
-The landing zone kubernetes is set up for testing kubernetes.
+### VNET
 
-In front of all landing zones there is an Application Gateway. The Application Gateway terminates SSL and routes traffic based on subdomain. The Application Gateway is the only resource with a public IP address.
+| Virtual Network | Address Space |
+|-----------------|---------------|
+| vnet-eus        | 10.21.0.0/16  |
 
-DNS *.christensen.no is pointing to the public IP address of the Application Gateway.
+### Subnets
 
-## Firewall functionality
+| Subnet | Address Space | Comment |
+|--------|---------------|---------|
+| appgw-backend-sn01-eus | 10.21.0.0/24 | Application Gateway |
+| nerd-backend-sn01-eus | 10.21.1.0/24 | nerd (nerdmeet)  |
+| k8s-backend-sn01-eus | 10.21.2.0/24 | k8s (kubernetes) |
+| api-backend-sn01-eus | 10.21.3.0/24 | api (Azure API Management and Azure Functions) |
 
-For more details see [10nerdnet-firewall.md](10nerdnet-firewall.md).
+Doc on how set up the landing zones can be found in [Network Landing Zones](13cmd-network-landingzones.md).
 
-```mermaid
-graph LR;
- client([client])-. web or API <br> request .->ingress[Azure Application Gateway];
- ingress-->|routing rule|service[dispatcher?];
- subgraph Firewall functionality
- ingress;
- service-->pod1[nerd];
- service-->pod2[api];
- service-->pod3[k8s];
- end
- classDef plain fill:#ddd,stroke:#fff,stroke-width:4px,color:#000;
- classDef k8s fill:#326ce5,stroke:#fff,stroke-width:4px,color:#fff;
- classDef cluster fill:#fff,stroke:#bbb,stroke-width:2px,color:#326ce5;
- class ingress,service,pod1,pod2,pod3 k8s;
- class client plain;
- class cluster cluster;
-```
+This is the current description of the nerdnet network. For a conseptual overview of the network see [7concept-network-architecture-security.md](7concept-network-architecture-security.md).
+
+## Firewall documentation
+
+Firewall documentation can be found in [nerdnet-firewall](10nerdnet-firewall.md).
