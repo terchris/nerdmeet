@@ -64,4 +64,4 @@ DNS *.christensen.no is pointing to the public IP address of the Application Gat
 | [Overall Structure](0overall-structure.md) | [howto SSL](3ssl-create.md) |
 | [Azure Resources](5cloud-azure.md) | [howto diagrams](8howto-diagram.md) |
 | [Naming Resources using CAF](6naming-caf.md) | [howto Bicep](4bicep-setup.md) |
-| . | [AZ commands and output](2commands.md) |
+| . | [All commands for creating nerdnet](12cmd-allcommands.md) |
