@@ -12,7 +12,7 @@ Index of all commands for setting up the initial nerdnet network.
 | [Create the landing zone k8s](17cmd-landing-k8s.md) | Set up the k8s Landing Zone (kubernetes) |
 | [Create the landing zone api](18cmd-landing-api.md) | Set up the api Landing Zone |
 | [Create the storage account](19cmd-storage.md) | Set up the storage account for the Azure Functions |
-| [Create the Azure Functions](20cmd-azure-functions.md) | Set up the Azure Functions |
+| [Create the Azure Functions](20cmd-functions.md) | Set up the Azure Functions |
 | [Create the APIM](21cmd-apim.md) | Set up the API Management service |
 
 The files above is a split and updated version of the initial file [2commands.md](historic-files/2commands.md).

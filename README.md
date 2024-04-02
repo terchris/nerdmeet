@@ -27,7 +27,7 @@ The community is built on the following principles:
 
 We are planning to invite all who belive that technology can help people in need to a hackathon event. The event will be a full weekend and follow the [Startup Weekend](https://startupweekend.org/) format. StartupWeekend is a well tried format for innovation and hackathon events and has been runing in 150+ countries since 2007.
 
-The event will be held in Oslo, Norway. October 2024.
+The event will be held in Red Cross Conference Center in Oslo, Friday 10 to Sunday 13 October 2024.
 
 ## NerdMeet meetups
 
